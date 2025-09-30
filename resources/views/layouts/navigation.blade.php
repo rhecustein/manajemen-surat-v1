@@ -1,100 +1,215 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                    </a>
-                </div>
+{{-- Navigation Component untuk sistem yang sudah ada sudah terintegrasi di main layout --}}
+{{-- File ini bisa digunakan jika ada kebutuhan navigation terpisah --}}
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                </div>
-            </div>
+{{-- Komponen Sidebar Navigation --}}
+@php
+    $menuItems = [
+        [
+            'title' => 'Dashboard',
+            'icon' => 'fas fa-chart-line',
+            'route' => 'dashboard',
+            'active' => 'dashboard'
+        ],
+        [
+            'title' => 'Manajemen Surat',
+            'icon' => 'fas fa-envelope',
+            'type' => 'dropdown',
+            'active' => 'surat.*',
+            'children' => [
+                ['title' => 'Surat Masuk', 'icon' => 'fas fa-inbox', 'route' => 'surat.masuk.index'],
+                ['title' => 'Surat Keluar', 'icon' => 'fas fa-paper-plane', 'route' => 'surat.keluar.index'],
+                ['title' => 'Riwayat Surat', 'icon' => 'fas fa-history', 'route' => 'surat.riwayat.index'],
+                ['title' => 'Disposisi Surat', 'icon' => 'fas fa-route', 'route' => 'surat.disposisi.index'],
+                ['title' => 'Arsip Surat', 'icon' => 'fas fa-archive', 'route' => 'surat.arsip.index'],
+            ]
+        ],
+        [
+            'title' => 'Klasifikasi Surat',
+            'icon' => 'fas fa-tags',
+            'route' => 'klasifikasi.index',
+            'active' => 'klasifikasi.*'
+        ],
+        [
+            'title' => 'Daftar Kontak',
+            'icon' => 'fas fa-address-book',
+            'route' => 'kontak.index',
+            'active' => 'kontak.*'
+        ],
+        [
+            'title' => 'Manajemen File',
+            'icon' => 'fas fa-folder',
+            'route' => 'file.index',
+            'active' => 'file.*'
+        ],
+        [
+            'title' => 'Laporan Surat',
+            'icon' => 'fas fa-chart-bar',
+            'route' => 'laporan.index',
+            'active' => 'laporan.*'
+        ]
+    ];
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+    $settingsMenu = [
+        [
+            'title' => 'Pengaturan Sistem',
+            'icon' => 'fas fa-cog',
+            'type' => 'dropdown',
+            'active' => 'sistem.*',
+            'children' => [
+                ['title' => 'Pengaturan Website', 'icon' => 'fas fa-globe', 'route' => 'sistem.site'],
+                ['title' => 'Manajemen User', 'icon' => 'fas fa-users', 'route' => 'users.index'],
+                ['title' => 'Log Aktivitas', 'icon' => 'fas fa-list-alt', 'route' => 'log.index'],
+            ]
+        ]
+    ];
+@endphp
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
+<div class="startbar-menu">
+    <div class="d-flex align-items-start flex-column w-100">
+        <ul class="navbar-nav mb-auto w-100">
+            <!-- Main Menu Label -->
+            <li class="menu-label">
+                <span>Menu Utama</span>
+            </li>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profil.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
+            @foreach($menuItems as $item)
+                @if(isset($item['type']) && $item['type'] === 'dropdown')
+                    <!-- Dropdown Menu Item -->
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs($item['active']) ? 'active' : '' }}" 
+                           href="#sidebar{{ Str::camel($item['title']) }}" 
+                           data-bs-toggle="collapse" 
+                           role="button"
+                           aria-expanded="{{ request()->routeIs($item['active']) ? 'true' : 'false' }}" 
+                           aria-controls="sidebar{{ Str::camel($item['title']) }}">
+                            <i class="{{ $item['icon'] }}"></i>
+                            <span>{{ $item['title'] }}</span>
+                            @if(isset($item['badge']))
+                                <span class="badge bg-{{ $item['badge']['color'] }} ms-auto">{{ $item['badge']['text'] }}</span>
+                            @endif
+                        </a>
+                        <div class="collapse {{ request()->routeIs($item['active']) ? 'show' : '' }}" 
+                             id="sidebar{{ Str::camel($item['title']) }}">
+                            <ul class="nav flex-column">
+                                @foreach($item['children'] as $child)
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->routeIs($child['route'].'.*') ? 'active' : '' }}" 
+                                           href="{{ route($child['route']) }}">
+                                            <i class="{{ $child['icon'] }}"></i> {{ $child['title'] }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </li>
+                @else
+                    <!-- Single Menu Item -->
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs($item['active']) ? 'active' : '' }}" 
+                           href="{{ route($item['route']) }}">
+                            <i class="{{ $item['icon'] }}"></i>
+                            <span>{{ $item['title'] }}</span>
+                            @if(isset($item['badge']))
+                                <span class="badge bg-{{ $item['badge']['color'] }} ms-auto">{{ $item['badge']['text'] }}</span>
+                            @endif
+                        </a>
+                    </li>
+                @endif
+            @endforeach
 
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
+            <!-- Settings Menu Label -->
+            <li class="menu-label">
+                <span>Pengaturan</span>
+            </li>
 
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-        </div>
+            @foreach($settingsMenu as $item)
+                @if(isset($item['type']) && $item['type'] === 'dropdown')
+                    <!-- Settings Dropdown Menu Item -->
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs($item['active']) ? 'active' : '' }}" 
+                           href="#sidebar{{ Str::camel($item['title']) }}" 
+                           data-bs-toggle="collapse" 
+                           role="button"
+                           aria-expanded="{{ request()->routeIs($item['active']) ? 'true' : 'false' }}" 
+                           aria-controls="sidebar{{ Str::camel($item['title']) }}">
+                            <i class="{{ $item['icon'] }}"></i>
+                            <span>{{ $item['title'] }}</span>
+                        </a>
+                        <div class="collapse {{ request()->routeIs($item['active']) ? 'show' : '' }}" 
+                             id="sidebar{{ Str::camel($item['title']) }}">
+                            <ul class="nav flex-column">
+                                @foreach($item['children'] as $child)
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->routeIs($child['route'].'.*') ? 'active' : '' }}" 
+                                           href="{{ route($child['route']) }}">
+                                            <i class="{{ $child['icon'] }}"></i> {{ $child['title'] }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </li>
+                @else
+                    <!-- Single Settings Menu Item -->
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs($item['active']) ? 'active' : '' }}" 
+                           href="{{ route($item['route']) }}">
+                            <i class="{{ $item['icon'] }}"></i>
+                            <span>{{ $item['title'] }}</span>
+                        </a>
+                    </li>
+                @endif
+            @endforeach
+        </ul>
     </div>
+</div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-        </div>
+{{-- Breadcrumb Component --}}
+@if(View::hasSection('breadcrumb'))
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ route('dashboard') }}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            @yield('breadcrumb')
+        </ol>
+    </nav>
+@endif
 
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
+{{-- Quick Stats Component --}}
+@push('scripts')
+<script>
+    // Navigation Helper Functions
+    function setActiveMenu(routeName) {
+        // Remove all active classes
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // Add active class to current menu
+        const activeLink = document.querySelector(`[href*="${routeName}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+            
+            // If it's a child menu, also expand parent
+            const parentCollapse = activeLink.closest('.collapse');
+            if (parentCollapse) {
+                parentCollapse.classList.add('show');
+                const trigger = document.querySelector(`[href="#${parentCollapse.id}"]`);
+                if (trigger) {
+                    trigger.classList.add('active');
+                    trigger.setAttribute('aria-expanded', 'true');
+                }
+            }
+        }
+    }
 
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
-        </div>
-    </div>
-</nav>
+    // Initialize navigation on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPath = window.location.pathname;
+        setActiveMenu(currentPath);
+    });
+</script>
+@endpush
