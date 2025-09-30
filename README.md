@@ -107,7 +107,7 @@ Aplikasi ini menggantikan sistem manual pengelolaan surat dengan solusi digital 
 
 ### **1. Clone Repository**
 ```bash
-git clone https://github.com/username/sistem-manajemen-surat.git
+git clone https://github.com/rhecustein/sistem-manajemen-surat.git
 cd sistem-manajemen-surat
 ```
 
@@ -136,7 +136,7 @@ DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=sistem_surat
-DB_USERNAME=root
+DB_rhecustein=root
 DB_PASSWORD=
 ```
 
@@ -228,7 +228,7 @@ Edit file `.env` untuk konfigurasi email:
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
-MAIL_USERNAME=your-email@gmail.com
+MAIL_rhecustein=your-email@gmail.com
 MAIL_PASSWORD=your-app-password
 MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS=noreply@yourcompany.com
@@ -395,7 +395,7 @@ php artisan queue:work --queue=emails,notifications
 #### **2. Environment Setup**
 ```bash
 # Clone repository
-git clone https://github.com/username/sistem-manajemen-surat.git
+git clone https://github.com/rhecustein/sistem-manajemen-surat.git
 cd sistem-manajemen-surat
 
 # Install dependencies
@@ -417,7 +417,7 @@ APP_URL=https://yourdomain.com
 DB_CONNECTION=mysql
 DB_HOST=localhost
 DB_DATABASE=sistem_surat_production
-DB_USERNAME=surat_user
+DB_rhecustein=surat_user
 DB_PASSWORD=secure_password
 
 # Mail
@@ -539,17 +539,17 @@ Terima kasih kepada:
 
 ## 📊 **Project Statistics**
 
-![GitHub repo size](https://img.shields.io/github/repo-size/username/sistem-manajemen-surat)
-![GitHub contributors](https://img.shields.io/github/contributors/username/sistem-manajemen-surat)
-![GitHub last commit](https://img.shields.io/github/last-commit/username/sistem-manajemen-surat)
-![GitHub issues](https://img.shields.io/github/issues/username/sistem-manajemen-surat)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/username/sistem-manajemen-surat)
+![GitHub repo size](https://img.shields.io/github/repo-size/rhecustein/sistem-manajemen-surat)
+![GitHub contributors](https://img.shields.io/github/contributors/rhecustein/sistem-manajemen-surat)
+![GitHub last commit](https://img.shields.io/github/last-commit/rhecustein/sistem-manajemen-surat)
+![GitHub issues](https://img.shields.io/github/issues/rhecustein/sistem-manajemen-surat)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/rhecustein/sistem-manajemen-surat)
 
 ---
 
 ## ⭐ **Star History**
 
-[![Star History Chart](https://api.star-history.com/svg?repos=username/sistem-manajemen-surat&type=Date)](https://star-history.com/#username/sistem-manajemen-surat&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=rhecustein/sistem-manajemen-surat&type=Date)](https://star-history.com/#rhecustein/sistem-manajemen-surat&Date)
 
 ---
 
